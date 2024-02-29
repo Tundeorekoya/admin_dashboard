@@ -1,5 +1,4 @@
 import { GraphQLFormattedError } from "graphql";
-import { url } from "inspector";
 
 type Error = {
   message: string;
@@ -8,7 +7,6 @@ type Error = {
 
 const customFetch = async (url: string, options: RequestInit) => {
   const accessToken = localStorage.getItem("access_token");
-
   const headers = options.headers as Record<string, string>;
 
   return await fetch(url, {
@@ -16,8 +14,8 @@ const customFetch = async (url: string, options: RequestInit) => {
     headers: {
       ...headers,
       Authorization: headers?.Authorization || `Bearer ${accessToken}`,
-      "content-type": "application/json",
-      "Apollo-Require-PreFlight": "true",
+      "Content-Type": "application/json",
+      "Apollo-Require-Preflight": "true",
     },
   });
 };
@@ -32,7 +30,7 @@ const getGraphQLErrors = (
     };
   }
 
-  if ("error" in body) {
+  if ("errors" in body) {
     const errors = body?.errors;
 
     const messages = errors?.map((error) => error?.message)?.join("");
@@ -59,5 +57,5 @@ export const fetchWrapper = async (url: string, options: RequestInit) => {
     throw error;
   }
 
-  return error;
+  return response;
 };
